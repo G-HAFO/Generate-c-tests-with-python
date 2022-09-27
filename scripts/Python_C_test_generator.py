@@ -117,7 +117,7 @@ static void test_add_U{name}_{ver}(void** state)
     }}
 }}
 """.format(name=size, ver=i, num1=create_printable(num_1, size),
-           num2=create_printable(num_2, size), result=create_printable(result, size), array_size=size // 4 ** 2)
+           num2=create_printable(num_2, size), result=create_printable(result, size), array_size=size // 16)
         i += 1
     return func_1
 
