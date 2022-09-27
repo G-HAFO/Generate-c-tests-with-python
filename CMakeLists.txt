@@ -18,8 +18,6 @@ enable_testing()
 # make 
 add_executable(tests src/main.c)
 
-# show warrings
-target_compile_options(tests PRIVATE -Wall -Wextra )
 
 # The order is VERY importnet (else Lineker will not work)
 target_link_libraries(tests 
