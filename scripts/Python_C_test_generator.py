@@ -42,10 +42,10 @@ def create_printable(num, size):
     while j < len(num_array):
         num_str += "0x" + str(num_array[j])
         j += 1
-        if j < (size // 16):
+        if j < (size // 16) and j<len(num_array):
             num_str += ", "
         if j % 6 == 0 and j != 0:
-            num_str += '\n' + ' ' * 33   
+            num_str += '\n' + ' ' * 33
     return num_str
 
 
@@ -58,7 +58,7 @@ def exclude_zeroes(array, size):
     :return: num array without 0x000
     """
     global tmp_array
-    for i in range(size // 16):
+    for i in range(1,size // 16):
         tmp_array = array
         if array[i] == "0000":
             check_0 = 0
@@ -70,8 +70,8 @@ def exclude_zeroes(array, size):
                 break
 
     return tmp_array
-    
-    
+
+
 def create_random_functions(n=20, size=384, value_min=0, value_max=-1 + 2 ** 384):
     """
     generates random functions, includes both edge cases
@@ -117,9 +117,9 @@ static void test_add_U{name}_{ver}(void** state)
     }}
 }}
 """.format(name=size, ver=i, num1=create_printable(num_1, size),
-             num2=create_printable(num_2, size), result=create_printable(result, size), array_size=size // 4 ** 2)
+           num2=create_printable(num_2, size), result=create_printable(result, size), array_size=size // 4 ** 2)
         i += 1
-    return func_1    
+    return func_1
 
 
 def create_call_function(n=20, size=384):
@@ -166,9 +166,9 @@ int main(int argc, char **argv)
 
 
 def main():
-    write_in_file('../src/main.c', create_text())
+    write_in_file('text.txt', create_text())
+
 
 if __name__ == "__main__":
     main()
-
 
