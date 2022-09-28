@@ -1,3 +1,14 @@
+"""
+
+Usage:
+  Python_C_test_generator.py (-B|--build) <type>
+  Python_C_test_generator.py (-h | --help)
+
+Options:
+  -h --help     Show this screen.
+  -B --build    Builds in desired format ( PC or stevec )
+"""
+from docopt import docopt
 from random import randint
 
 
@@ -42,10 +53,10 @@ def create_printable(num, size):
     while j < len(num_array):
         num_str += "0x" + str(num_array[j])
         j += 1
-        if j < (size // 16):
+        if j < (size // 16) and j < len(num_array):
             num_str += ", "
         if j % 6 == 0 and j != 0:
-            num_str += '\n' + ' ' * 33   
+            num_str += '\n' + ' ' * 33
     return num_str
 
 
@@ -58,7 +69,7 @@ def exclude_zeroes(array, size):
     :return: num array without 0x000
     """
     global tmp_array
-    for i in range(size // 16):
+    for i in range(1, size // 16):
         tmp_array = array
         if array[i] == "0000":
             check_0 = 0
@@ -70,9 +81,9 @@ def exclude_zeroes(array, size):
                 break
 
     return tmp_array
-    
-    
-def create_random_functions(n=20, size=384, value_min=0, value_max=-1 + 2 ** 384):
+
+
+def create_random_functions(n=20, build_type="PC", size=384, value_min=0, value_max=-1 + 2 ** 384):
     """
     generates random functions, includes both edge cases
     default values already set
@@ -82,7 +93,7 @@ def create_random_functions(n=20, size=384, value_min=0, value_max=-1 + 2 ** 384
     :type n: how many fuctions you want to create
     """
     size = size
-    func_1 = ""
+    func_PC = func_stevec = ""
     i = 0
     while i < n:
         if i == 0:
@@ -99,30 +110,49 @@ def create_random_functions(n=20, size=384, value_min=0, value_max=-1 + 2 ** 384
         num_1 = correct_number(num_1, size)
         num_2 = correct_number(num_2, size)
         result = correct_number(result, size)
-        func_1 += """
-static void test_add_U{name}_{ver}(void** state)
-{{
-
-            uint16_t num1[{array_size}] = {{{num1}}};
-      const uint16_t num2[{array_size}] = {{{num2}}};
-    /* correct answer */
-    const uint16_t result[{array_size}] = {{{result}}};
-
-    add_U{name}(num1, num2);
-
-    /* check result */
-    for (int i = 0; i < sizeof(num1) / sizeof(uint16_t); i++)
-    {{
-        assert_int_equal(num1[i], result[i]);
-    }}
-}}
-""".format(name=size, ver=i, num1=create_printable(num_1, size),
-             num2=create_printable(num_2, size), result=create_printable(result, size), array_size=size // 4 ** 2)
+        func_PC += (f"\n"
+        f"static void test_add_U{size}_{i}(void** state)\n"
+        f"{{\n"
+        f"\n"
+        f"            uint16_t num1[{size // 4 ** 2}] = {{{create_printable(num_1, size)}}};\n"
+        f"      const uint16_t num2[{size // 4 ** 2}] = {{{create_printable(num_2, size)}}};\n"
+        f"    /* correct answer */\n"
+        f"    const uint16_t result[{size // 4 ** 2}] = {{{create_printable(result, size)}}};\n"
+        f"\n"
+        f"    add_U{size}(num1, num2);\n"
+        f"\n"
+        f"    /* check result */\n"
+        f"    for (int i = 0; i < sizeof(num1) / sizeof(uint16_t); i++)\n"
+        f"    {{\n"
+        f"        assert_int_equal(num1[i], result[i]);\n"
+        f"    }}\n"
+        f"}}\n")
+        func_stevec += (f"\n"
+        f"int16_t test_add_U{size}_{i}()\n"
+        f"{{\n"
+        f"\n"
+        f"            uint16_t num1[{size // 4 ** 2}] = {{{create_printable(num_1, size)}}};\n"
+        f"      const uint16_t num2[{size // 4 ** 2}] = {{{create_printable(num_2, size)}}};\n"
+        f"    /* correct answer */\n"
+        f"    const uint16_t result[{size // 4 ** 2}] = {{{create_printable(result, size)}}};\n"
+        f"\n"
+        f"    add_U{size}(num1, num2);\n"
+        f"\n"
+        f"    /* check result */\n"
+        f"    for (int i = 0; i < sizeof(num1) / sizeof(uint16_t); i++)\n"
+        f"        if(num1[i] != result[i]){{\n"
+        f"            return RESULT_ERROR;\n"
+        f"    }}\n"
+        f"   return RESULT_ERROR;\n"
+        f"}}\n")
         i += 1
-    return func_1    
+    if build_type == "PC":
+        return func_PC
+    else:
+        return func_stevec
 
 
-def create_call_function(n=20, size=384):
+def create_call_function(build_type="PC", size=384, n=20):
     """
      call functions in main
      default values already set
@@ -131,44 +161,76 @@ def create_call_function(n=20, size=384):
     :return:
     """
     unit_tests = ""
-    for i in range(n):
-        unit_tests += """
-       cmocka_unit_test(test_add_U{name}_{ver}),
-        """.format(name=size, ver=i)
+    if build_type == "PC":
+        for i in range(n):
+            unit_tests += (f"\n"
+            f"       cmocka_unit_test(test_add_U{size}_{i}),\n"
+            f"        ")
+    else:
+        for i in range(n):
+            unit_tests += (f"\n"
+            f"        if(test_add_U{size}_{i}() == RESULT_ERROR)\n"
+            f"    {{\n"
+            f"	 assert(0);\n"
+            f"	return RESULT_ERROR;\n"
+            f"    }}\n"
+            f"         ")
     return unit_tests
 
 
-def create_text():
-    c_text = """
-#include <stdio.h>
-#include <stdlib.h>
-#include <setjmp.h>
-#include <stdarg.h>
-#include <stddef.h>
-#include <stdint.h>
-#include <cmocka.h>
-#include "dbg.h"
+def create_text(build_ver):
+    c_text_PC = (f"\n"
+    f"#include <stdio.h>\n"
+    f"#include <stdlib.h>\n"
+    f"#include <setjmp.h>\n"
+    f"#include <stdarg.h>\n"
+    f"#include <stddef.h>\n"
+    f"#include <stdint.h>\n"
+    f"#include <cmocka.h>\n"
+    f"#include \"dbg.h\"\n"
+    f"\n"
+    f"{create_random_functions(build_type=build_ver)}\n"
+    f"\n"
+    f"int main(int argc, char **argv)\n"
+    f"{{\n"
+    f"    const struct CMUnitTest tests[] =\n"
+    f"    {{\n"
+    f"    {create_call_function(build_type=build_ver)}\n"
+    f"    }};\n"
+    f"\n"
+    f"    return cmocka_run_group_tests(tests, NULL, NULL);\n"
+    f"}}\n"
+    f"\n")
+    c_text_stevec = (f"\n"
+    f"#include <assert.h>\n"
+    f"#include <string.h>\n"
+    f"\n"
+    f"#include \"platform.h\"\n"
+    f"#include \"math_256.h\"\n"
+    f"#include \"math_384.h\"\n"
+    f"\n"
+    f"{create_random_functions(build_type=build_ver)}\n"
+    f"\n"
+    f"int16_t tests_add_U384(void)\n"
+    f"{{\n"
+    f"\n"
+    f"    {create_call_function(build_type=build_ver)}\n"
+    f"   \n"
+    f"    return RESULT_OK;\n"
+    f"}}\n"
+    f"\n"
+    f"    ")
+    if build_ver == "PC":
+        return c_text_PC
+    else:
+        return c_text_stevec
 
-{append}
 
-int main(int argc, char **argv)
-{{
-    const struct CMUnitTest tests[] =
-    {{
-    {append_2}
-    }};
+def main(build_type):
+    write_in_file('../src/main.c', create_text(build_type))
 
-    return cmocka_run_group_tests(tests, NULL, NULL);
-}}
-
-""".format(append=create_random_functions(), append_2=create_call_function())
-    return c_text
-
-
-def main():
-    write_in_file('../src/main.c', create_text())
 
 if __name__ == "__main__":
-    main()
-
-
+    arguments = docopt(__doc__)
+    if arguments['--build'] or arguments['-B']:
+        main(arguments['<type>'])
