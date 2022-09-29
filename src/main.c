@@ -21,20 +21,6 @@ int8_t add_U384(uint16_t *num1, int16_t len_num1, const uint16_t *num2) {
     }
     return carry_bit;
 }
-/* correct answer
-const uint16_t result[24] = {0x36e1, 0xbf12, 0x065b, 0x2952, 0x34ed, 0xef89,
-                             0x60b8, 0x206f, 0xa507, 0x5e77, 0x5d61, 0x0bd9,
-                             0x878f, 0xa1e8, 0xac47, 0x7549, 0x3b8b, 0x9fcb,
-                             0x1756, 0x7b2b, 0x0170, 0x43c1, 0xeb1e, 0x8859
-                             };
-                             */
-for (
-i = 0;
-i < 24; i++) {
-num1[i] = result[i];
-}
-}
-//add_U384(num1, num2);
 
 
 int main(int argc, char **argv) {
