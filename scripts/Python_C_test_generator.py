@@ -189,7 +189,6 @@ def create_text(build_ver):
     f"#include <stddef.h>\n"
     f"#include <stdint.h>\n"
     f"#include <cmocka.h>\n"
-    f"#include \"dbg.h\"\n"
     f"\n"
     f"{create_random_functions(build_type=build_ver)}\n"
     f"\n"
