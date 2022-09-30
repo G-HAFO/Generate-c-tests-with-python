@@ -1,0 +1,651 @@
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <setjmp.h>
+#include <stdarg.h>
+#include <stddef.h>
+#include <stdint.h>
+#include <cmocka.h>
+//#include "dbg.h"
+
+
+static void test_add_U384_0(void** state)
+{
+
+            uint16_t num1[24] = {0x0000};
+      const uint16_t num2[24] = {0x0000};
+    /* correct answer */
+    const uint16_t result[24] = {0x0000};
+
+    add_U384(num1, num2);
+
+    /* check result */
+    int i=0;
+    for (i = 0; i < sizeof(num1) / sizeof(uint16_t); i++)
+    {
+        assert_int_equal(num1[i], result[i]);
+    }
+}
+
+static void test_add_U384_1(void** state)
+{
+
+            uint16_t num1[24] = {0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 
+                                 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 
+                                 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 
+                                 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff
+                                 };
+      const uint16_t num2[24] = {0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 
+                                 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 
+                                 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 
+                                 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff
+                                 };
+    /* correct answer */
+    const uint16_t result[24] = {0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 
+                                 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 
+                                 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 
+                                 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0x1fff
+                                 };
+
+    add_U384(num1, num2);
+
+    /* check result */
+    int i=0;
+    for (i = 0; i < sizeof(num1) / sizeof(uint16_t); i++)
+    {
+        assert_int_equal(num1[i], result[i]);
+    }
+}
+
+static void test_add_U384_2(void** state)
+{
+
+            uint16_t num1[24] = {0x9dee, 0x0d8c, 0x270d, 0x2552, 0x79e6, 0xc5de, 
+                                 0x0740, 0x00a7, 0xff33, 0x3e45, 0x12e1, 0x733f, 
+                                 0xfe52, 0x8c72, 0x48bd, 0x7287, 0x11c4, 0x1d32, 
+                                 0x5d3b, 0x99d0, 0xbe60, 0xa399, 0xbfa8, 0x3f7c
+                                 };
+      const uint16_t num2[24] = {0x79d3, 0x403b, 0xe0ba, 0x10b3, 0xd651, 0xbb6c, 
+                                 0xace6, 0x2cbc, 0xf3e2, 0x28ec, 0xda1d, 0xd030, 
+                                 0xd13e, 0xf069, 0x7bea, 0xceea, 0xfeb4, 0xec3f, 
+                                 0x314f, 0xa028, 0x65ad, 0x1290, 0x7ccf, 0x1bb8
+                                 };
+    /* correct answer */
+    const uint16_t result[24] = {0x17c1, 0x4dc8, 0x07c7, 0x3606, 0x5037, 0x814b, 
+                                 0xb427, 0x2d63, 0xf315, 0x6732, 0xecfe, 0x436f, 
+                                 0xcf91, 0x7cdc, 0xc4a8, 0x4171, 0x1079, 0x0972, 
+                                 0x8e8b, 0x39f8, 0x240e, 0xb62a, 0x3c77, 0x5b35
+                                 };
+
+    add_U384(num1, num2);
+
+    /* check result */
+    int i=0;
+    for (i = 0; i < sizeof(num1) / sizeof(uint16_t); i++)
+    {
+        assert_int_equal(num1[i], result[i]);
+    }
+}
+
+static void test_add_U384_3(void** state)
+{
+
+            uint16_t num1[24] = {0x4068, 0x4a61, 0x5c4d, 0x8af6, 0x3a33, 0x9ed5, 
+                                 0x74fa, 0xbb11, 0xa72c, 0x2679, 0x2fd1, 0xf255, 
+                                 0x8675, 0xdf7c, 0xe1ff, 0xc31e, 0x8bfb, 0x6999, 
+                                 0xf26b, 0x5bdd, 0xb63c, 0xee20, 0x138f, 0x580e
+                                 };
+      const uint16_t num2[24] = {0x31ee, 0x33c0, 0x7b41, 0x93ba, 0xcd58, 0xbf07, 
+                                 0x7244, 0xc46d, 0xfcbc, 0xf442, 0x57b7, 0xaf33, 
+                                 0x5a86, 0x1289, 0x1da4, 0xf98f, 0xea73, 0x4675, 
+                                 0xe580, 0x66f5, 0x321a, 0x8690, 0xb1d4, 0x6567
+                                 };
+    /* correct answer */
+    const uint16_t result[24] = {0x7256, 0x7e21, 0xd78e, 0x1eb0, 0x078c, 0x5ddd, 
+                                 0xe73f, 0x7f7e, 0xa3e9, 0x1abc, 0x8789, 0xa188, 
+                                 0xe0fc, 0xf205, 0xffa3, 0xbcad, 0x766f, 0xb00f, 
+                                 0xd7eb, 0xc2d3, 0xe856, 0x74b0, 0xc564, 0xbd75
+                                 };
+
+    add_U384(num1, num2);
+
+    /* check result */
+    int i=0;
+    for (i = 0; i < sizeof(num1) / sizeof(uint16_t); i++)
+    {
+        assert_int_equal(num1[i], result[i]);
+    }
+}
+
+static void test_add_U384_4(void** state)
+{
+
+            uint16_t num1[24] = {0x7abf, 0xb181, 0x945b, 0x6732, 0xe435, 0x604c, 
+                                 0x11eb, 0x11c4, 0x3ead, 0xe1f4, 0x1fbe, 0x4053, 
+                                 0x7a0b, 0xf53e, 0x491b, 0x8062, 0x2ee3, 0x4012, 
+                                 0xe61a, 0xcd1c, 0xce94, 0xfdff, 0x3f03, 0xdf92
+                                 };
+      const uint16_t num2[24] = {0x3238, 0x3952, 0x3795, 0x2c65, 0xece4, 0x0127, 
+                                 0x70e2, 0x60b3, 0xec81, 0xb5ac, 0xbcd3, 0x8c6c, 
+                                 0x1b92, 0x3df5, 0x03bb, 0xf8cd, 0xb76c, 0x0e97, 
+                                 0x9def, 0xa6b8, 0x0272, 0x0f5b, 0x32a2, 0x1fb2
+                                 };
+    /* correct answer */
+    const uint16_t result[24] = {0xacf7, 0xead3, 0xcbf0, 0x9397, 0xd119, 0x6174, 
+                                 0x82cd, 0x7277, 0x2b2e, 0x97a1, 0xdc92, 0xccbf, 
+                                 0x959d, 0x3333, 0x4cd7, 0x792f, 0xe650, 0x4ea9, 
+                                 0x8409, 0x73d5, 0xd107, 0x0d5a, 0x71a6, 0xff44
+                                 };
+
+    add_U384(num1, num2);
+
+    /* check result */
+    int i=0;
+    for (i = 0; i < sizeof(num1) / sizeof(uint16_t); i++)
+    {
+        assert_int_equal(num1[i], result[i]);
+    }
+}
+
+static void test_add_U384_5(void** state)
+{
+
+            uint16_t num1[24] = {0xf6a5, 0xa246, 0x8b21, 0x2031, 0x033c, 0x5313, 
+                                 0x92e0, 0xbe91, 0xdde9, 0xcafd, 0xb7e6, 0x99a8, 
+                                 0x42fe, 0xd117, 0xa324, 0x057c, 0xa1c2, 0x920e, 
+                                 0x7e0f, 0x2b2b, 0xeed4, 0x1746, 0xff23, 0x3e54
+                                 };
+      const uint16_t num2[24] = {0xeb86, 0xd632, 0xc55e, 0x1771, 0xca40, 0x5002, 
+                                 0x192f, 0xec91, 0xf5ff, 0x6a87, 0xdf7e, 0xb203, 
+                                 0x7f3e, 0x2657, 0xa0b4, 0xcb8c, 0x9995, 0x1b7c, 
+                                 0x293a, 0xf8dc, 0xc286, 0x2e69, 0x7ed5, 0xa318
+                                 };
+    /* correct answer */
+    const uint16_t result[24] = {0xe22b, 0x7879, 0x5080, 0x37a3, 0xcd7c, 0xa315, 
+                                 0xac0f, 0xab22, 0xd3e9, 0x3585, 0x9765, 0x4bac, 
+                                 0xc23d, 0xf76e, 0x43d8, 0xd109, 0x3b57, 0xad8b, 
+                                 0xa749, 0x2407, 0xb15b, 0x45b0, 0x7df8, 0xe16d
+                                 };
+
+    add_U384(num1, num2);
+
+    /* check result */
+    int i=0;
+    for (i = 0; i < sizeof(num1) / sizeof(uint16_t); i++)
+    {
+        assert_int_equal(num1[i], result[i]);
+    }
+}
+
+static void test_add_U384_6(void** state)
+{
+
+            uint16_t num1[24] = {0x40d0, 0x23ad, 0xfb6d, 0x9610, 0x2ab1, 0x0e0b, 
+                                 0xc737, 0x2dee, 0xb3c8, 0xb3af, 0x70da, 0xbd51, 
+                                 0x15b9, 0x2548, 0xc755, 0xbe59, 0x2ae9, 0x2d76, 
+                                 0x97fa, 0x88e1, 0xc43f, 0x1b49, 0x8f80, 0x52fc
+                                 };
+      const uint16_t num2[24] = {0x0d32, 0x9829, 0x62ca, 0x0c46, 0xa9ba, 0xad53, 
+                                 0xb826, 0x6338, 0xeaff, 0x89a6, 0x75bc, 0xb892, 
+                                 0x441f, 0xb2f4, 0x5762, 0xe43d, 0xa973, 0x8c6e, 
+                                 0xb07b, 0xe9d2, 0x9058, 0xa774, 0x83ee, 0x0d69
+                                 };
+    /* correct answer */
+    const uint16_t result[24] = {0x4e02, 0xbbd6, 0x5e37, 0xa257, 0xd46b, 0xbb5e, 
+                                 0x7f5d, 0x9127, 0x9ec7, 0x3d56, 0xe697, 0x75e3, 
+                                 0x59d9, 0xd83c, 0x1eb7, 0xa297, 0xd45d, 0xb9e4, 
+                                 0x4875, 0x72b4, 0x5498, 0xc2be, 0x136e, 0x6066
+                                 };
+
+    add_U384(num1, num2);
+
+    /* check result */
+    int i=0;
+    for (i = 0; i < sizeof(num1) / sizeof(uint16_t); i++)
+    {
+        assert_int_equal(num1[i], result[i]);
+    }
+}
+
+static void test_add_U384_7(void** state)
+{
+
+            uint16_t num1[24] = {0x6007, 0x638d, 0x42a8, 0x8fe6, 0x59b1, 0xc146, 
+                                 0x189a, 0x9f23, 0xfa23, 0x9f49, 0x1bca, 0xc0e9, 
+                                 0xbcd8, 0xb631, 0xaef9, 0xa8fe, 0x598f, 0x6746, 
+                                 0x0428, 0xdb6d, 0x10f2, 0x6143, 0xac0b, 0x758f
+                                 };
+      const uint16_t num2[24] = {0x3006, 0x61f5, 0x321c, 0x31ca, 0x975e, 0xcf1b, 
+                                 0x3253, 0xf8d0, 0xc032, 0x8b7e, 0xa9e0, 0xd751, 
+                                 0x2526, 0x2481, 0xd573, 0xf7c2, 0x3c14, 0xa52d, 
+                                 0x3b70, 0xde89, 0xd704, 0x3eec, 0x873c, 0x12a9
+                                 };
+    /* correct answer */
+    const uint16_t result[24] = {0x900d, 0xc582, 0x74c4, 0xc1b0, 0xf10f, 0x9061, 
+                                 0x4aee, 0x97f3, 0xba56, 0x2ac8, 0xc5ab, 0x983a, 
+                                 0xe1ff, 0xdab2, 0x846c, 0xa0c1, 0x95a4, 0x0c73, 
+                                 0x3f99, 0xb9f6, 0xe7f7, 0xa02f, 0x3347, 0x8839
+                                 };
+
+    add_U384(num1, num2);
+
+    /* check result */
+    int i=0;
+    for (i = 0; i < sizeof(num1) / sizeof(uint16_t); i++)
+    {
+        assert_int_equal(num1[i], result[i]);
+    }
+}
+
+static void test_add_U384_8(void** state)
+{
+
+            uint16_t num1[24] = {0x61b7, 0x1a59, 0x7382, 0x8342, 0xf7ee, 0x757a, 
+                                 0x21c9, 0x58d5, 0xe53a, 0x375d, 0x9d70, 0x7861, 
+                                 0xf4f1, 0x7c33, 0x0216, 0xadee, 0xeae1, 0x0c75, 
+                                 0x6d24, 0x1534, 0x80ad, 0x75c8, 0xeb77, 0xe512
+                                 };
+      const uint16_t num2[24] = {0xd2fb, 0x557c, 0x3141, 0x0466, 0xfc9e, 0x30f1, 
+                                 0x5aba, 0xedbc, 0xbc55, 0x3d1a, 0x7637, 0x2c71, 
+                                 0xc793, 0x3213, 0x4a11, 0xa2c4, 0x0b9c, 0xccd3, 
+                                 0x1cff, 0x016c, 0x37cb, 0xc9aa, 0x10f7, 0x12de
+                                 };
+    /* correct answer */
+    const uint16_t result[24] = {0x34b2, 0x6fd6, 0xa4c3, 0x87a8, 0xf48c, 0xa66c, 
+                                 0x7c83, 0x4691, 0xa190, 0x7478, 0x13a7, 0xa4d3, 
+                                 0xbc84, 0xae47, 0x4c27, 0x50b2, 0xf67e, 0xd948, 
+                                 0x8a23, 0x16a0, 0xb878, 0x3f72, 0xfc6f, 0xf7f0
+                                 };
+
+    add_U384(num1, num2);
+
+    /* check result */
+    int i=0;
+    for (i = 0; i < sizeof(num1) / sizeof(uint16_t); i++)
+    {
+        assert_int_equal(num1[i], result[i]);
+    }
+}
+
+static void test_add_U384_9(void** state)
+{
+
+            uint16_t num1[24] = {0x64ef, 0x6e3b, 0x63eb, 0xfee5, 0xdce7, 0x1f61, 
+                                 0x6baa, 0x075e, 0xb532, 0x81a9, 0x09c3, 0x0639, 
+                                 0x7851, 0x5491, 0x6627, 0x7bb4, 0x3f39, 0xe1f9, 
+                                 0xf4a6, 0x7a8a, 0x9062, 0x3cff, 0x972c, 0x0ff3
+                                 };
+      const uint16_t num2[24] = {0xb52e, 0x8e47, 0x13d2, 0x04c9, 0xc852, 0x3bc0, 
+                                 0x7991, 0x542f, 0xfb82, 0xd5ff, 0xa4cc, 0x4eec, 
+                                 0x6096, 0x51f1, 0x761e, 0xe684, 0xab1d, 0xcc44, 
+                                 0x3cd9, 0xf32b, 0xc5cc, 0x3b4e, 0x9384, 0xa35e
+                                 };
+    /* correct answer */
+    const uint16_t result[24] = {0x1a1d, 0xfc83, 0x77bd, 0x03ae, 0xa53a, 0x5b22, 
+                                 0xe53b, 0x5b8d, 0xb0b4, 0x57a9, 0xae90, 0x5525, 
+                                 0xd8e7, 0xa682, 0xdc45, 0x6238, 0xea57, 0xae3d, 
+                                 0x3180, 0x6db6, 0x562f, 0x784e, 0x2ab0, 0xb352
+                                 };
+
+    add_U384(num1, num2);
+
+    /* check result */
+    int i=0;
+    for (i = 0; i < sizeof(num1) / sizeof(uint16_t); i++)
+    {
+        assert_int_equal(num1[i], result[i]);
+    }
+}
+
+static void test_add_U384_10(void** state)
+{
+
+            uint16_t num1[24] = {0x898e, 0x9b58, 0xea46, 0xcd99, 0xcf5f, 0xb526, 
+                                 0xfe50, 0x4af0, 0x1f1b, 0x25f5, 0x02e3, 0xf389, 
+                                 0xfe29, 0x4741, 0xe2b7, 0x4854, 0x0314, 0xd5fd, 
+                                 0x03fb, 0xd83a, 0x2145, 0xcce8, 0x94c3, 0xf155
+                                 };
+      const uint16_t num2[24] = {0x453a, 0x37aa, 0x43b7, 0x1958, 0xd3d0, 0x4f97, 
+                                 0xc928, 0x8455, 0xb018, 0x636f, 0xa795, 0x1059, 
+                                 0x2e56, 0xcb57, 0x7361, 0x2748, 0xc4a3, 0x6ef7, 
+                                 0xd48b, 0x1603, 0x95b8, 0x7df1, 0x5d81, 0x01e4
+                                 };
+    /* correct answer */
+    const uint16_t result[24] = {0xcec8, 0xd302, 0x2dfd, 0xe6f2, 0xa32f, 0x04be, 
+                                 0xc779, 0xcf46, 0xcf33, 0x8964, 0xaa78, 0x03e2, 
+                                 0x2c80, 0x1299, 0x5619, 0x6f9d, 0xc7b7, 0x44f4, 
+                                 0xd887, 0xee3d, 0xb6fd, 0x4ad9, 0xf245, 0xf339
+                                 };
+
+    add_U384(num1, num2);
+
+    /* check result */
+    int i=0;
+    for (i = 0; i < sizeof(num1) / sizeof(uint16_t); i++)
+    {
+        assert_int_equal(num1[i], result[i]);
+    }
+}
+
+static void test_add_U384_11(void** state)
+{
+
+            uint16_t num1[24] = {0x19e6, 0xc23d, 0x2ddd, 0xc20f, 0x0bfb, 0x936b, 
+                                 0x4f8f, 0x88b6, 0x4bc8, 0x53cf, 0x5f7b, 0xa5e4, 
+                                 0x9b4a, 0xf92d, 0x1856, 0xc718, 0x2edd, 0x5719, 
+                                 0x000b, 0x9540, 0xe0d0, 0x3762, 0x0358, 0x86fa
+                                 };
+      const uint16_t num2[24] = {0x3f14, 0x0821, 0x0504, 0x01bf, 0xd4d4, 0xc23e, 
+                                 0xf47f, 0x526d, 0xb416, 0x098e, 0xaf4d, 0x665b, 
+                                 0x8845, 0x4139, 0x45fc, 0x647c, 0xe0fc, 0xc992, 
+                                 0x24c0, 0xb107, 0x306d, 0x035c, 0x4474, 0x3f2b
+                                 };
+    /* correct answer */
+    const uint16_t result[24] = {0x58fa, 0xca5e, 0x32e1, 0xc3ce, 0xe0cf, 0x55a9, 
+                                 0x440f, 0xdb24, 0xffde, 0x5d5d, 0x0ec8, 0x0c40, 
+                                 0x2390, 0x3a67, 0x5e53, 0x2b94, 0x0fda, 0x20ac, 
+                                 0x24cc, 0x4647, 0x113e, 0x3abf, 0x47cc, 0xc625
+                                 };
+
+    add_U384(num1, num2);
+
+    /* check result */
+    int i=0;
+    for (i = 0; i < sizeof(num1) / sizeof(uint16_t); i++)
+    {
+        assert_int_equal(num1[i], result[i]);
+    }
+}
+
+static void test_add_U384_12(void** state)
+{
+
+            uint16_t num1[24] = {0x4c1e, 0xc727, 0x8ca6, 0xba7e, 0x587c, 0x2302, 
+                                 0xe4df, 0xd3e9, 0x730d, 0x77ed, 0x3d95, 0xf03e, 
+                                 0x2d47, 0xa0f7, 0x1390, 0xd14e, 0xecc0, 0x2945, 
+                                 0x3e16, 0xc8a1, 0xae29, 0x9655, 0xb757, 0xa353
+                                 };
+      const uint16_t num2[24] = {0x3172, 0xd25d, 0x6e12, 0x43e7, 0xeeb3, 0x2b28, 
+                                 0x04c6, 0xc110, 0xd04d, 0x3659, 0xa19b, 0x99c1, 
+                                 0xfbfa, 0x46e9, 0x521b, 0x6e17, 0xbacb, 0x4fdd, 
+                                 0x34cb, 0xdd89, 0x3ed8, 0x4045, 0x1b65, 0x2929
+                                 };
+    /* correct answer */
+    const uint16_t result[24] = {0x7d90, 0x9984, 0xfab9, 0xfe65, 0x472f, 0x4e2b, 
+                                 0xe9a5, 0x94f9, 0x435b, 0xae47, 0xdf30, 0x89ff, 
+                                 0x2942, 0xe7e1, 0x65ab, 0x3f65, 0xa78c, 0x7923, 
+                                 0x72e1, 0xa62a, 0xed02, 0xd69a, 0xd2bc, 0xcc7c
+                                 };
+
+    add_U384(num1, num2);
+
+    /* check result */
+    int i=0;
+    for (i = 0; i < sizeof(num1) / sizeof(uint16_t); i++)
+    {
+        assert_int_equal(num1[i], result[i]);
+    }
+}
+
+static void test_add_U384_13(void** state)
+{
+
+            uint16_t num1[24] = {0xac59, 0x14c7, 0xd958, 0xe53e, 0x7fe8, 0xc3b1, 
+                                 0xdf7c, 0x4a7a, 0x0748, 0x68b8, 0xf27e, 0x1b1c, 
+                                 0xbddd, 0xbaa4, 0xda3f, 0xb0c2, 0x3b78, 0xfcfc, 
+                                 0x38ed, 0x535d, 0xa7e3, 0x056a, 0x3740, 0x4080
+                                 };
+      const uint16_t num2[24] = {0xbe37, 0x0cd7, 0x40ec, 0x6e9f, 0x3a31, 0xc486, 
+                                 0x95dc, 0x84ff, 0xd331, 0x09e1, 0x84a0, 0x5ce4, 
+                                 0x9ea1, 0x869d, 0x3778, 0x6bc8, 0xccb8, 0x557a, 
+                                 0xbc25, 0x3299, 0xaf3b, 0xc43d, 0x8c89, 0x75f7
+                                 };
+    /* correct answer */
+    const uint16_t result[24] = {0x6a90, 0x219f, 0x1a44, 0x53de, 0xba1a, 0x8837, 
+                                 0x7559, 0xcf7a, 0xda79, 0x7299, 0x771e, 0x7801, 
+                                 0x5c7e, 0x4142, 0x11b8, 0x1c8b, 0x0831, 0x5277, 
+                                 0xf513, 0x85f6, 0x571e, 0xc9a8, 0xc3c9, 0xb677
+                                 };
+
+    add_U384(num1, num2);
+
+    /* check result */
+    int i=0;
+    for (i = 0; i < sizeof(num1) / sizeof(uint16_t); i++)
+    {
+        assert_int_equal(num1[i], result[i]);
+    }
+}
+
+static void test_add_U384_14(void** state)
+{
+
+            uint16_t num1[24] = {0x1b7b, 0xc953, 0x79e0, 0x0a15, 0xe5d3, 0xdf03, 
+                                 0x605b, 0xa100, 0xa35a, 0xceda, 0xeb11, 0x6587, 
+                                 0xa65c, 0x52c5, 0x4c67, 0x927a, 0xa97e, 0x3e9f, 
+                                 0x86a0, 0x1e12, 0x1639, 0x7582, 0x7c2f, 0xbd7c
+                                 };
+      const uint16_t num2[24] = {0x7ab9, 0xecd9, 0x6404, 0x4432, 0x6419, 0x4e70, 
+                                 0x200c, 0x2f1a, 0xea85, 0x9b78, 0xa5ea, 0x9fc6, 
+                                 0x4537, 0x6bfb, 0xa8a4, 0xaae9, 0x9545, 0x3aad, 
+                                 0x7d2d, 0xef71, 0x2dec, 0xc81d, 0x619c, 0x23ff
+                                 };
+    /* correct answer */
+    const uint16_t result[24] = {0x9634, 0xb62c, 0xdde5, 0x4e47, 0x49ec, 0x2d74, 
+                                 0x8068, 0xd01a, 0x8ddf, 0x6a53, 0x90fc, 0x054e, 
+                                 0xeb94, 0xbec0, 0xf50b, 0x3d63, 0x3ec4, 0x794d, 
+                                 0x03cd, 0x0d84, 0x4426, 0x3d9f, 0xddcc, 0xe17b
+                                 };
+
+    add_U384(num1, num2);
+
+    /* check result */
+    int i=0;
+    for (i = 0; i < sizeof(num1) / sizeof(uint16_t); i++)
+    {
+        assert_int_equal(num1[i], result[i]);
+    }
+}
+
+static void test_add_U384_15(void** state)
+{
+
+            uint16_t num1[24] = {0xdc4e, 0x8fe5, 0x0be9, 0x6a90, 0x7c00, 0xfead, 
+                                 0x16aa, 0x917b, 0xa4e4, 0x7af1, 0xb22e, 0xa01f, 
+                                 0x64a2, 0x9896, 0xb055, 0xd5ee, 0xeae5, 0xf37c, 
+                                 0xa1ef, 0xa1f4, 0x75e9, 0xf9d0, 0xcfd0, 0x1b7e
+                                 };
+      const uint16_t num2[24] = {0x9a54, 0x0e45, 0x20f1, 0x44b4, 0xb336, 0x448c, 
+                                 0xd018, 0xaaa2, 0x519f, 0x886d, 0xc77b, 0x1ab8, 
+                                 0x17ae, 0xbfcc, 0xec39, 0x60c5, 0xd4f8, 0x7ec6, 
+                                 0x9fc6, 0xfe4b, 0xd986, 0x2be0, 0xfc4e, 0xc53b
+                                 };
+    /* correct answer */
+    const uint16_t result[24] = {0x76a2, 0x9e2b, 0x2cda, 0xaf44, 0x2f36, 0x433a, 
+                                 0xe6c3, 0x3c1d, 0xf684, 0x035e, 0x79aa, 0xbad8, 
+                                 0x7c50, 0x5862, 0x9c8f, 0x36b4, 0xbfde, 0x7243, 
+                                 0x41b6, 0xa040, 0x4f70, 0x25b1, 0xcc1f, 0xe0ba
+                                 };
+
+    add_U384(num1, num2);
+
+    /* check result */
+    int i=0;
+    for (i = 0; i < sizeof(num1) / sizeof(uint16_t); i++)
+    {
+        assert_int_equal(num1[i], result[i]);
+    }
+}
+
+static void test_add_U384_16(void** state)
+{
+
+            uint16_t num1[24] = {0x19f0, 0x56ae, 0x1eec, 0x85da, 0x5478, 0xcaea, 
+                                 0x0111, 0xed75, 0x71af, 0xebe8, 0x229d, 0xf1d3, 
+                                 0x2837, 0x1db2, 0x9e07, 0x5d59, 0xfe0c, 0x0ff2, 
+                                 0xcd34, 0xa3e8, 0xa67e, 0xf15d, 0x7d5e, 0x50b9
+                                 };
+      const uint16_t num2[24] = {0xea9b, 0x4d40, 0xea1c, 0xb5ec, 0x859f, 0x5469, 
+                                 0xefe8, 0xeed2, 0xb047, 0x7ebf, 0x6abf, 0x7d52, 
+                                 0x6d32, 0xbba0, 0xba6c, 0xec1f, 0xd761, 0x7eca, 
+                                 0x48bd, 0xf8d8, 0xfdfa, 0xcc49, 0x929c, 0x76db
+                                 };
+    /* correct answer */
+    const uint16_t result[24] = {0x048b, 0xa3ef, 0x0908, 0x3bc7, 0xda18, 0x1f53, 
+                                 0xf0fa, 0xdc47, 0x21f7, 0x6aa8, 0x8d5d, 0x6f25, 
+                                 0x956a, 0xd952, 0x5873, 0x4979, 0xd56e, 0x8ebd, 
+                                 0x15f1, 0x9cc1, 0xa479, 0xbda7, 0x0ffb, 0xc795
+                                 };
+
+    add_U384(num1, num2);
+
+    /* check result */
+    int i=0;
+    for (i = 0; i < sizeof(num1) / sizeof(uint16_t); i++)
+    {
+        assert_int_equal(num1[i], result[i]);
+    }
+}
+
+static void test_add_U384_17(void** state)
+{
+
+            uint16_t num1[24] = {0xc568, 0x5262, 0xa197, 0x887e, 0x050e, 0x2301, 
+                                 0xe0e0, 0x4ec4, 0x1164, 0xd943, 0xa180, 0xcab5, 
+                                 0xdfa7, 0xf623, 0x72e1, 0xa399, 0x4733, 0x40af, 
+                                 0xa92f, 0x6e52, 0x20a3, 0x400f, 0x10ff, 0x9b2f
+                                 };
+      const uint16_t num2[24] = {0xa078, 0x45ae, 0x3a83, 0xf6fd, 0x1b08, 0xfed3, 
+                                 0x7b0b, 0x47dd, 0x0e23, 0xf234, 0x6bd4, 0x4db2, 
+                                 0x52b7, 0xc2e9, 0xa463, 0x9335, 0x4ea7, 0xd3da, 
+                                 0x383a, 0xecc6, 0x8366, 0x4e78, 0x706a, 0x1882
+                                 };
+    /* correct answer */
+    const uint16_t result[24] = {0x65e0, 0x9811, 0xdc1a, 0x7f7b, 0x2017, 0x21d4, 
+                                 0x5bec, 0x96a2, 0x1f87, 0xcb77, 0x0d55, 0x1868, 
+                                 0x325f, 0xb90d, 0x1745, 0x36cf, 0x95db, 0x1489, 
+                                 0xe16a, 0x5b18, 0xa40a, 0x8e87, 0x8169, 0xb3b1
+                                 };
+
+    add_U384(num1, num2);
+
+    /* check result */
+    int i=0;
+    for (i = 0; i < sizeof(num1) / sizeof(uint16_t); i++)
+    {
+        assert_int_equal(num1[i], result[i]);
+    }
+}
+
+static void test_add_U384_18(void** state)
+{
+
+            uint16_t num1[24] = {0x4a9b, 0xeef3, 0xba38, 0xf49b, 0x020d, 0xaf91, 
+                                 0xbfe0, 0xd7e2, 0x55f9, 0xcb82, 0x3119, 0xabdd, 
+                                 0xed72, 0x2e5c, 0x45f4, 0xc820, 0xd268, 0xb726, 
+                                 0x218e, 0xc75b, 0x4883, 0x7edd, 0x9bb7, 0x43f2
+                                 };
+      const uint16_t num2[24] = {0xd897, 0x2dc6, 0xb11f, 0x4217, 0xef06, 0xcdcc, 
+                                 0xfc89, 0xecda, 0x20e9, 0x0402, 0x34c9, 0xec7f, 
+                                 0xb11b, 0xf36b, 0xc789, 0x894d, 0x37e3, 0x4893, 
+                                 0xb0cd, 0x9e05, 0x4acc, 0xd278, 0x8bc7, 0x405e
+                                 };
+    /* correct answer */
+    const uint16_t result[24] = {0x2332, 0x1cba, 0x6b58, 0x36b3, 0xf114, 0x7d5d, 
+                                 0xbc6a, 0xc4bd, 0x76e3, 0xcf84, 0x65e2, 0x985c, 
+                                 0x9e8e, 0x21c8, 0x0d7e, 0x516e, 0x0a4c, 0xffba, 
+                                 0xd25b, 0x6560, 0x9350, 0x5155, 0x277f, 0x8451
+                                 };
+
+    add_U384(num1, num2);
+
+    /* check result */
+    int i=0;
+    for (i = 0; i < sizeof(num1) / sizeof(uint16_t); i++)
+    {
+        assert_int_equal(num1[i], result[i]);
+    }
+}
+
+static void test_add_U384_19(void** state)
+{
+
+            uint16_t num1[24] = {0xdf49, 0xe25a, 0x6fda, 0xcde2, 0x814f, 0xd6a4, 
+                                 0x2317, 0x7bbf, 0xc5d4, 0x6584, 0xbd39, 0x0d4c, 
+                                 0xb10d, 0x82f6, 0x6676, 0x2c8e, 0xc5b2, 0xb62a, 
+                                 0x7c31, 0x6fed, 0xb1c7, 0x223e, 0x2aea, 0x3236
+                                 };
+      const uint16_t num2[24] = {0x25df, 0x0abf, 0xa8dd, 0x7b39, 0xb265, 0x481e, 
+                                 0xba47, 0x513e, 0xeda4, 0x8977, 0x7c38, 0x5a38, 
+                                 0x958c, 0xdb66, 0x8c98, 0x26c3, 0xc6af, 0xdd3b, 
+                                 0x5b15, 0xdeee, 0xb525, 0xbca7, 0x2d06, 0xcbf7
+                                 };
+    /* correct answer */
+    const uint16_t result[24] = {0x0528, 0xed1a, 0x18b7, 0x491c, 0x33b5, 0x1ec3, 
+                                 0xdd5f, 0xccfd, 0xb378, 0xeefc, 0x3971, 0x6785, 
+                                 0x4699, 0x5e5d, 0xf30f, 0x5351, 0x8c61, 0x9366, 
+                                 0xd747, 0x4edb, 0x66ed, 0xdee6, 0x57f0, 0xfe2d
+                                 };
+
+    add_U384(num1, num2);
+
+    /* check result */
+    int i=0;
+    for (i = 0; i < sizeof(num1) / sizeof(uint16_t); i++)
+    {
+        assert_int_equal(num1[i], result[i]);
+    }
+}
+
+
+int main(int argc, char **argv)
+{
+    const struct CMUnitTest tests[] =
+    {
+    
+       cmocka_unit_test(test_add_U384_0),
+        
+       cmocka_unit_test(test_add_U384_1),
+        
+       cmocka_unit_test(test_add_U384_2),
+        
+       cmocka_unit_test(test_add_U384_3),
+        
+       cmocka_unit_test(test_add_U384_4),
+        
+       cmocka_unit_test(test_add_U384_5),
+        
+       cmocka_unit_test(test_add_U384_6),
+        
+       cmocka_unit_test(test_add_U384_7),
+        
+       cmocka_unit_test(test_add_U384_8),
+        
+       cmocka_unit_test(test_add_U384_9),
+        
+       cmocka_unit_test(test_add_U384_10),
+        
+       cmocka_unit_test(test_add_U384_11),
+        
+       cmocka_unit_test(test_add_U384_12),
+        
+       cmocka_unit_test(test_add_U384_13),
+        
+       cmocka_unit_test(test_add_U384_14),
+        
+       cmocka_unit_test(test_add_U384_15),
+        
+       cmocka_unit_test(test_add_U384_16),
+        
+       cmocka_unit_test(test_add_U384_17),
+        
+       cmocka_unit_test(test_add_U384_18),
+        
+       cmocka_unit_test(test_add_U384_19),
+        
+    };
+
+    return cmocka_run_group_tests(tests, NULL, NULL);
+}
+
+
