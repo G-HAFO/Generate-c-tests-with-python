@@ -6,7 +6,7 @@
 * Python libraries:
                 
     * docopt (0.6.2) 
-    ```
+    ```npm
     pip install docopt
     ```  
 ### Quick Start
@@ -14,35 +14,35 @@
 Run the followin commands in CMD:
 
 * Download  the project
-```
+```npm
  git clone https://gitlab.com/gregorhafnar2/iskra.git
 ```
 * Open the project
-``` 
+```npm 
  cd iskra
 ```
 * Compile the project with CMake
-```
+```npm
  cmake -G "MinGW Makefiles" -B build -S .
 ```
 * Open scripts directory
-```
+```npm
  cd scripts
 ```
 * Run the python program
-```
+```npm
  python3 Python_C_test_generator.py -B PC
 ```
 * Exit the scripts directory and open build directory
-```
+```npm
  cd ../build
 ```
 * Compile C code with MinGW
-```
+```npm
  mingw32-make
 ```
 * Run our program ( should print our test results)
-```
+```npm
  ctest -V
 ```
 
@@ -68,15 +68,15 @@ Usage:
 
 ```
 You have two different build options -> "PC" or "stevec". Build the desired build_typeas such (you can use either "--build" or "-B"):
-```
+```npm
 py Python_C_test_generator.py -B stevec
 ```
 or
-```
+```npm
 py Python_C_test_generator.py -B PC
 ```
 
 If you want help, run the following command:
-```
+```npm
 py Python_C_test_generator.py -h
 ```
