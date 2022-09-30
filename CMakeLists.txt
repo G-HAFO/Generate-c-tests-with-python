@@ -8,31 +8,31 @@ include(cmake/FetchCMocka.cmake)
 
 # add static library asm into project
 # add_subdirectory(lib)
+add_subdirectory(math)
 
 #include .h files
 include_directories(lib,
-        inc)
+        inc,
+        math
+)
 
 # main executable
-add_executable(gg src/main.c)
+add_executable(run_main src/main.c)
 
-#[===[
+target_link_libraries(run_main
+        matlib
+        )
+
 # UNIT TESTS
 # minimal unit ctest
-if(FALSE)
 enable_testing()
 add_executable(tests test/test.c)
 
 # The order is VERY importnet (else Lineker will not work)
 target_link_libraries(tests
-        ASMlib
+        matlib
         cmocka-static
         )
 
-
-
 # invoke command tests
 add_test(NAME tests COMMAND tests)
-endif()
-]===]
-#

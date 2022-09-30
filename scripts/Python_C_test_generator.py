@@ -1,5 +1,4 @@
 """
-
 Usage:
   Python_C_test_generator.py (-B|--build) <type>
   Python_C_test_generator.py (-h | --help)
@@ -122,7 +121,8 @@ def create_random_functions(n=20, build_type="PC", size=384, value_min=0, value_
         f"    add_U{size}(num1, num2);\n"
         f"\n"
         f"    /* check result */\n"
-        f"    for (int i = 0; i < sizeof(num1) / sizeof(uint16_t); i++)\n"
+        f"    int i=0;\n"           
+        f"    for (i = 0; i < sizeof(num1) / sizeof(uint16_t); i++)\n"
         f"    {{\n"
         f"        assert_int_equal(num1[i], result[i]);\n"
         f"    }}\n"
@@ -138,12 +138,14 @@ def create_random_functions(n=20, build_type="PC", size=384, value_min=0, value_
         f"\n"
         f"    add_U{size}(num1, num2);\n"
         f"\n"
-        f"    /* check result */\n"
-        f"    for (int i = 0; i < sizeof(num1) / sizeof(uint16_t); i++)\n"
+        f" /* check result */\n"
+        f"    int i;\n"
+        f"    for ( i = 0; i < sizeof(num1) / sizeof(uint16_t); i++)\n"
         f"        if(num1[i] != result[i]){{\n"
         f"            return RESULT_ERROR;\n"
+        f"                "
         f"    }}\n"
-        f"   return RESULT_ERROR;\n"
+        f"   return RESULT_OK;\n"
         f"}}\n")
         i += 1
     if build_type == "PC":

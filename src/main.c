@@ -5,23 +5,10 @@
 #include <stdarg.h>
 #include <stddef.h>
 #include <stdint.h>
+#include "matlib.h"
 
 // #include <cmocka.h>
 // #include "dbg.h"
-
-int8_t add_U384(uint16_t *num1, int16_t len_num1, const uint16_t *num2) {
-    
-    int i;
-    uint32_t sum;
-    uint8_t carry_bit = 0;
-    for (i = 0; i < 24; i++) {
-        sum = num1[i] + num2[i] + carry_bit;
-        num1[i] = sum & 0xFFFF;
-        carry_bit = sum >> 16;
-    }
-    return carry_bit;
-}
-
 
 int main(int argc, char **argv) {
     uint16_t num1[24] = {0xfc8b, 0x92e4, 0x91eb, 0x370c, 0xa07f, 0xe435,
@@ -35,14 +22,10 @@ int main(int argc, char **argv) {
                                0xa47b, 0xa357, 0xf6a0, 0x4601, 0x87fd, 0x756b
     };
 
+	printf("Function add_U384()\n");
     add_U384(num1, num2);
-    sub_U384(num1, num2);
-    int i = 0;
-    for (; i < 24; i++) {
-        printf("%x ", num1[i]);
-    }
-
-    return 0;
+   
+   return 0;
 }
 
 
