@@ -31,7 +31,7 @@ Run the followin commands in CMD:
 ```
 * Run the python program
 ```npm
- python3 Python_C_test_generator.py -B PC
+ py Python_C_test_generator.py -B PC
 ```
 * Exit the scripts directory and open build directory
 ```npm
