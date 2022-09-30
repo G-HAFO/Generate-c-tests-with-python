@@ -229,7 +229,7 @@ def create_text(build_ver):
 
 
 def main(build_type):
-    write_in_file('/test/test.c', create_text(build_type))
+    write_in_file('../test/test.c', create_text(build_type))
 
 
 if __name__ == "__main__":
